@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Much Do You Love Me?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            user-select: none;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .options {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            padding: 25px 50px;
+            font-size: 1.8em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+        button:hover {
+            transform: scale(1.1);
+        }
+        #love1 { background: #ff4500; }
+        #love2 { background: #ffd700; color: black; }
+        #message {
+            display: none;
+            font-size: 2.8em;
+            margin-top: 50px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: white;
+            font-size: 2em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="question">How much do you love your boyfriend?</h1>
+    
+    <div class="options" id="options">
+        <button id="love1">1%</button>
+        <button id="love2">0%</button>
+    </div>
+
+    <div id="message">
+        I love you too much sana ♥️<br>
+        You're the best thing in my life!
+    </div>
+
+    <div class="overlay" id="overlay">
+        <div>😈 You can't escape this love trap! Lock your phone to exit ♥️</div>
+    </div>
+
+<script>
+    let level = 0;
+    const optionsDiv = document.getElementById('options');
+    const question = document.getElementById('question');
+    const message = document.getElementById('message');
+    const overlay = document.getElementById('overlay');
+
+    const questions = [
+        "How much do you love your boyfriend?",
+        "Be honest... how much?",
+        "Still not enough...",
+        "Come on baby...",
+        "Almost there...",
+        "Muhsin needs more love!"
+    ];
+
+    function getOptions(level) {
+        const high = Math.max(5 - level, 1);
+        const low = Math.max(high - 1, 0);
+        return [`${high}%`, `${low}%`];
+    }
+
+    function updateButtons() {
+        optionsDiv.innerHTML = '';
+        
+        const [highText, lowText] = getOptions(level);
+        
+        const btnHigh = document.createElement('button');
+        btnHigh.id = 'love1';
+        btnHigh.textContent = highText;
+        btnHigh.onclick = () => nextLevel();
+        
+        const btnLow = document.createElement('button');
+        btnLow.id = 'love2';
+        btnLow.textContent = lowText;
+        btnLow.onclick = () => nextLevel();
+        
+        optionsDiv.appendChild(btnHigh);
+        optionsDiv.appendChild(btnLow);
+    }
+
+    function nextLevel() {
+        level++;
+        
+        if (level >= 6) {
+            // Show final message
+            question.style.display = 'none';
+            optionsDiv.style.display = 'none';
+            message.style.display = 'block';
+            overlay.style.display = 'flex';
+            return;
+        }
+        
+        question.textContent = questions[level % questions.length];
+        updateButtons();
+    }
+
+    // Fullscreen
+    function goFullscreen() {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        }
+    }
+
+    // Prevent back/refresh
+    window.onbeforeunload = function() {
+        return "Are you sure you want to leave your boyfriend's love? ♥️";
+    };
+
+    // Keyboard traps
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' || e.key === 'Escape' || (e.key === 'r' && e.ctrlKey)) {
+            e.preventDefault();
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.style.display = 'none', 1500);
+        }
+    });
+
+    // Start the prank
+    window.onload = () => {
+        goFullscreen();
+        updateButtons();
+        
+        setInterval(() => {
+            if (document.hidden) {
+                overlay.style.display = 'flex';
+            }
+        }, 1000);
+    };
+</script>
+
+</body>
+</html>
